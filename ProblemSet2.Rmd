@@ -1,0 +1,123 @@
+---
+title: "A research on the willingness of Canadian to have child in 2017"
+author: "Weijia Chen"
+date: "October 18th 2020"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Abstract
+
+Linear regression model is applied to Canadian General Social Survey (GSS) data in this paper. The results show that people with high education certification and satisfy with their life are more willing to have children. Government can use this finding to improve the birth rate and be ready to face the possible future ageing problem in the future.
+
+## Introduction
+
+According to World Health Organization (WHO), there was around 5% old people (older than 65-years-old) in 1950s and increased to 7% in the 21st century. Nowadays, many developed countries are facing ageing problem such Japan and European countries. WHO predicts that there will be 250 percent increasing in the number of older people in less developed countries and 71 percent for developed countries. The overall proportion of old people will be more than 15% in 2050 and the percentage of young children (younger than 5-years-old) will be less than 8%. Therefore, I am interested to explore the factors that affect the willingness of Canadian to have child. In this paper, I would try to use the survey data to analysis the willingness of Canadian to have child. The method I used for the analysis is linear regression model. This model can be used to analysis the relationship between a response and one or more explanatory variables. I’ll use the number of total children intention as a represent of the willingness of Canadian to have child and some other relevant explanatory variables in my model.
+
+## Data
+The data I use for this analysis is the Canadian General Social Survey (GSS). I will focus on the latest data that is 2017 since the prior year data may be obsolete for my analysis. The GSS data is from the telephone survey conducted during February to November 2018 in the 10 provinces of Canada. There should be some sampling bias since the sample population is family with telephone. The family that does not have telephone then would not be included in the sample.
+
+The response variable I selected from GSS is ‘number_total_children_intention’. Because this variable can indicate the willingness of Canadian to have child and it can give us some forecast about the future ageing problem. Some people were not willing to answer the total number of children intention question in the survey, so there are 647 missing answer for this question. I remove those observations.
+
+I only use the explanatory variables that related to my analysis such as gender, age, education, family income, etc. There are some data cleaning and transformation done before I fit them into my model. Because I want to analysis the Canadian willingness to have child, I filter out the samples that has age greater than 40. There are 5987 samples with age less than 40. The age of my sample is between 15 to 39.9 with median 30.7. I also remove the observations with missing data in education field. After removing those observations, the sample size of my data is 5258.
+
+The gender, education and family income are category variables with 2, 7 and 6 categories respectively. There are some drawbacks of the data. For exmaple, I only have the six categories (Less than \$25,000, \$25,000 to \$49,999, \$50,000 to \$74,999, \$75,000 to \$99,999,\$100,000 to \$124,999 and \$125,000 and more) of family income rather than numeric value of it. Then I can only estimate the difference between each category.
+
+## Model
+
+I’ll fit the my data into a linear model with response variable ‘Number Total Children Intention’ and explanatory variables ‘Age’, ‘Feelings Life’, ‘Sex’, ‘Education’ and ‘Income_Family’. Because the number of total children intention can be zero, I transform to log(1+Number Total Children Intention).
+
+$log(1+y)=\beta_0+\beta_{age}*x_{age}+\beta_{life}*x_{life}+\beta_{Male}*x_{Male}+\beta_{31}*x_{31}+...+\beta_{36}*x_{36}+\beta_{41}*x_{41}+...+\beta_{45}*x_{45}+e$
+
+where
+
+$y:$ the number of intension children;
+
+$x_{age}:$ Age of people;
+
+$x_{life}:$ Feeling scroe of life;
+
+$x_{Male}:$ 1 if sex is male, 0 if others;
+
+$\beta_{31}:$ 1 if College, CEGEP or other non-university certificate or diploma, 0 if others;
+
+$\beta_{32}:$ 1 if High school diploma or a high school equivalency certificate, 0 if others;
+
+$\beta_{33}:$ 1 if Less than high school diploma or its equivalent, 0 if others;
+
+$\beta_{34}:$ 1 if Trade certificate or diploma , 0 if others;
+
+$\beta_{35}:$ 1 if University certificate or diploma below the bachelor's level, 0 if others;
+
+$\beta_{36}:$ 1 if University certificate, diploma or degree above the bachelor's level, 0 if others;
+
+$\beta_{41}:$ 1 if family income \$125,000 and more, 0 if others;
+
+$\beta_{42}:$ 1 if family income between \$25,000 to \$49,999 , 0 if others;
+
+$\beta_{43}:$ 1 if family income between \$50,000 to \$74,999, 0 if others;
+
+$\beta_{44}:$ 1 if family income between \$75,000 to \$99,999, 0 if others;
+
+$\beta_{45}:$ 1 if family income Less than \$25,000, 0 if others;
+
+The above model is my original model, but I may remove some insignificant variables later.
+
+## Results
+
+```{r, echo=FALSE}
+gss <- read.csv("gss.csv")
+mydata <- gss[which(gss$age<40),]
+mydata <- mydata[-which(is.na(mydata$number_total_children_intention)),]
+mydata <- mydata[-which(is.na(mydata$education)),]
+hist(mydata$age, xlab = "Age", main ="Histogram of Age",sub = "Figure 1")
+```
+
+The age is range from 15 to 39.9 with median 30.7 and the first and third quantile 24.8 and 35.5. Around 50 precents of data are between 30 and 40. There are 2763 female and 2495 male in the sample. 1712 of them has bachelor degree or above. 638 observations have family income less than $25,000 and family income for \$25,000 to \$49,999, \$50,000 to \$74,999 and \$75,000 to \$99,999 are all around 850. The number of people who has family income \$100,000 to \$124,999 and \$125,000 and more are 650 and 1395 respectively. For the feelings scroe of life, the first quantile is 7 which means more than 75 precents of people give high scroe feelings of life in the sample which can be observed from Figure 2. And the mean value of it is 8.019.
+
+```{r, echo=FALSE}
+hist(as.numeric(mydata$feelings_life), xlab = "Feeling Score of Life", main ="Histogram of Feeling Score of Life",sub = "Figure 2")
+```
+
+
+Now I fit my data into my first model which including explaintory variables: age, feelings of life, sex, education and family income and response variable log(1+number of total children intention). The results of this model is in appendex. The results shows that only family income between \$25,000 to \$49,999 has p-value 0.049652 which is significant at 5% significant level but not at 1% significant level. All other category of family income are not significant. Therefore, I will remove this variable and fit the data into a new model which only contain age, feelings of life, sex and education. 
+
+The results of the new model is shown in appendex. The average total number of children intention is 1.8008. During age 15 to 40, with one unit increase in age, thetotal number of children intention will decrease by 0.0438.The average total number of children intention of male is 0.1349 more than female. For the feeling score of life, the average total number of children intention will increase 0.0263 with one more point.
+The education level also has significant impact to the average total number of children intention. The average total number of children intention of college, CEGEP or other non-university certificate or diploma, high school diploma or a high school equivalency certificat, Less than high school diploma or its equivalent and trade certificate or diploma holders are 0.0651, 0.1721, 0.3305 and 0.0988 less than bachelor degree holders. And there is no signficant difference between bachelor degree holders and university certificate or diploma below the bachelor's level holders. I also notice the people are more willing to have children if he/she has degree above the bachelor.
+
+## Discussion
+
+From my analysis, the average number of child intention is 1.801. The family income does not have significant impact to the willingness of Canadian to have children. However, the satisfication or feeling of life has positive influence to the average number of child intention. The willingness decrease as age increasing. Another factor is education level, people with university certificate would has high willingness to have children comparing to people without university certificate. Therefore, goverment can increase the birth rate by improving life satisfication and education level.
+
+# Weaknesses
+
+There also some weaknesses of the model. Firstly, R squared of this model is only 0.2096 which means only 20.96% variability of this model can be explained by the model. Therefore, we may need include more relavent variables into my model. 
+
+# Next Steps
+
+There may be more some suitable transformations of response variables since the lower limit after transformation is log(1) and the upper limit cannot be infinite. Also follow-up survey may be conducted to improve my analysis. I can use the follow-up survey to explore more variables which may significantly impact the willingness of Canadian to have children.
+
+
+## References
+
+1. World Health Organization. (2011, October 1). Global Health and Aging. https://www.who.int/ageing/publications
+
+2. Wu, Changbao, and Mary E. Thompson. "Basic Concepts in Survey Sampling." Sampling Theory and Practice. Springer, Cham, 2020.
+
+## Appendex
+1. model with family income
+```{r, echo=FALSE}
+model1 <- lm(log(1+number_total_children_intention)~age+feelings_life+sex+education+income_family, data = mydata)
+summary(model1)
+```
+
+2. model without family income
+```{r, echo=FALSE}
+model2 <- lm(log(1+number_total_children_intention)~age+feelings_life+sex+education, data = mydata)
+summary(model2)
+```
