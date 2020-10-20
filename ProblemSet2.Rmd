@@ -94,11 +94,11 @@ The education level also has significant impact to the average total number of c
 
 From my analysis, the average number of child intention is 1.801. The family income does not have significant impact to the willingness of Canadian to have children. However, the satisfication or feeling of life has positive influence to the average number of child intention. The willingness decrease as age increasing. Another factor is education level, people with university certificate would has high willingness to have children comparing to people without university certificate. Therefore, goverment can increase the birth rate by improving life satisfication and education level.
 
-# Weaknesses
+## Weaknesses
 
 There also some weaknesses of the model. Firstly, R squared of this model is only 0.2096 which means only 20.96% variability of this model can be explained by the model. Therefore, we may need include more relavent variables into my model. 
 
-# Next Steps
+## Next Steps
 
 There may be more some suitable transformations of response variables since the lower limit after transformation is log(1) and the upper limit cannot be infinite. Also follow-up survey may be conducted to improve my analysis. I can use the follow-up survey to explore more variables which may significantly impact the willingness of Canadian to have children.
 
@@ -109,14 +109,16 @@ There may be more some suitable transformations of response variables since the 
 
 2. Wu, Changbao, and Mary E. Thompson. "Basic Concepts in Survey Sampling." Sampling Theory and Practice. Springer, Cham, 2020.
 
-## Appendex
-1. model with family income
+## Appendix
+1.GitHub repo: https://github.com/jaspercwj/ProblemSet2
+
+2. model with family income
 ```{r, echo=FALSE}
 model1 <- lm(log(1+number_total_children_intention)~age+feelings_life+sex+education+income_family, data = mydata)
 summary(model1)
 ```
 
-2. model without family income
+3. model without family income
 ```{r, echo=FALSE}
 model2 <- lm(log(1+number_total_children_intention)~age+feelings_life+sex+education, data = mydata)
 summary(model2)
